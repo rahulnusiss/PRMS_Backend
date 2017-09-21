@@ -1,7 +1,7 @@
 # PRMS_Backend
 SAD CA FT06 Backend
 
-REST API for create,modify, delete and copy (to be completed)
+REST API for create,modify, delete and copy (to be test)
 
 sample PUT request for create schedule:
 url: http://127.0.0.1:8080/phoenix/rest/programslot/create
