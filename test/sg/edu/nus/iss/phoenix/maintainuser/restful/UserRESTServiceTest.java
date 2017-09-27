@@ -68,6 +68,94 @@ public class UserRESTServiceTest {
         assertNotNull(result.getUsrList().size() > 0);
         
     }
+    
+    /**
+     * Test of getAllPresenters method, of class UserRESTService.
+     */
+    @Test
+    public void testGetAllPresenters() {
+        System.out.println("getAllPresenters");
+        UserRESTService instance = new UserRESTService();
+        if(instance.getUser("jackle2") != null) {
+            instance.deleteUser("jackle2");
+        }
+        Users expResult = null;
+        Users result = instance.getAllPresenters();
+        if(result.getUsrList() == null ||
+               result.getUsrList().size() == 0) {
+            User expectedUsr = new User();
+            expectedUsr.setName("Jack Le");
+            expectedUsr.setPassword("password");
+            Role e1 = new Role("producer");
+            Role e2 = new Role("presenter");
+            ArrayList<Role> roles = new ArrayList<Role>();
+            roles.add(e1);
+            roles.add(e2);
+            expectedUsr.setRoles(roles);
+            expectedUsr.setId("jackle2");
+            instance.createUser(expectedUsr);
+            result = instance.getAllPresenters();
+        }
+        
+        assertNotNull(result.getUsrList().size() > 0);
+        
+        for(int i = 0; i < result.getUsrList().size(); i++){
+            ArrayList<Role> roles = result.getUsrList().get(i).getRoles();
+            boolean isUserPresenter = false;
+            for(int j = 0; j < roles.size(); j++) {
+                if(roles.get(j).getRole().equals("presenter")){
+                    isUserPresenter = true;
+                    break;
+                }
+            }
+            
+            assertTrue(isUserPresenter);
+        }
+    }
+    
+    /**
+     * Test of getAllProducers method, of class UserRESTService.
+     */
+    @Test
+    public void testGetAllProducers() {
+        System.out.println("getAllProducers");
+        UserRESTService instance = new UserRESTService();
+        if(instance.getUser("jackle2") != null) {
+            instance.deleteUser("jackle2");
+        }
+        
+        Users expResult = null;
+        Users result = instance.getAllProducers();
+        if(result.getUsrList() == null ||
+               result.getUsrList().size() == 0) {
+            User expectedUsr = new User();
+            expectedUsr.setName("Jack Le");
+            expectedUsr.setPassword("password");
+            Role e1 = new Role("producer");
+            Role e2 = new Role("presenter");
+            ArrayList<Role> roles = new ArrayList<Role>();
+            roles.add(e1);
+            roles.add(e2);
+            expectedUsr.setRoles(roles);
+            expectedUsr.setId("jackle2");
+            instance.createUser(expectedUsr);
+            result = instance.getAllProducers();
+        }
+        
+        assertNotNull(result.getUsrList().size() > 0);
+        for(int i = 0; i < result.getUsrList().size(); i++){
+            ArrayList<Role> roles = result.getUsrList().get(i).getRoles();
+            boolean isUserProducer = false;
+            for(int j = 0; j < roles.size(); j++) {
+                if(roles.get(j).getRole().equals("producer")){
+                    isUserProducer = true;
+                    break;
+                }
+            }
+            
+            assertTrue(isUserProducer);
+        }
+    }
 
     /**
      * Test of updateUser method, of class UserRESTService.

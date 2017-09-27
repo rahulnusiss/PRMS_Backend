@@ -90,6 +90,56 @@ public class UserRESTService {
         return usrsList;
     }
     
+    @GET
+    @Path("/allPresenters")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Users getAllPresenters() {
+        ArrayList<User> usrlist = service.findAllUSR();
+        Users usrsList = new Users();
+        usrsList.setUsrList(new ArrayList<>());
+        
+        for (int i = 0; i < usrlist.size(); i++) {
+            ArrayList<Role> roles = usrlist.get(i).getRoles();
+            for(int j = 0; j < roles.size(); j++) {
+                if(roles.get(j).getRole().equals("presenter")){
+                    User user = new User(usrlist.get(i).getId());
+                    user.setName(usrlist.get(i).getName());
+                    user.setPassword(usrlist.get(i).getPassword());
+                    user.setRoles(usrlist.get(i).getRoles());
+                    usrsList.getUsrList().add(user);
+                    break;
+                }
+            }
+        }
+
+        return usrsList;
+    }
+    
+    @GET
+    @Path("/allProducers")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Users getAllProducers() {
+        ArrayList<User> usrlist = service.findAllUSR();
+        Users usrsList = new Users();
+        usrsList.setUsrList(new ArrayList<>());
+        
+        for (int i = 0; i < usrlist.size(); i++) {
+            ArrayList<Role> roles = usrlist.get(i).getRoles();
+            for(int j = 0; j < roles.size(); j++) {
+                if(roles.get(j).getRole().equals("producer")){
+                    User user = new User(usrlist.get(i).getId());
+                    user.setName(usrlist.get(i).getName());
+                    user.setPassword(usrlist.get(i).getPassword());
+                    user.setRoles(usrlist.get(i).getRoles());
+                    usrsList.getUsrList().add(user);
+                    break;
+                }
+            }
+        }
+
+        return usrsList;
+    }
+    
     /**
      * POST method for updating or creating an instance of resource
      * @param usr
