@@ -123,7 +123,8 @@ public class UserDaoImpl implements UserDao {
 			stmt.setString(1, valueObject.getId());
 			stmt.setString(2, valueObject.getPassword());
 			stmt.setString(3, valueObject.getName());
-			stmt.setString(4, valueObject.getRoles().get(0).getRole());
+                        String roleString = getRoleString(valueObject);
+			stmt.setString(4, roleString);
 
 			int rowcount = databaseUpdate(stmt);
 			if (rowcount != 1) {
@@ -137,6 +138,16 @@ public class UserDaoImpl implements UserDao {
 		}
 
 	}
+
+    private String getRoleString(User valueObject) {
+        ArrayList<Role> roleList = valueObject.getRoles();
+        List<String> roleStrings = new ArrayList<>(roleList.size());
+        for (Role role : roleList) {
+            roleStrings.add(role.getRole());
+        }
+        String roleString = String.join(DELIMITER, roleStrings);
+        return roleString;
+    }
 
 	/*
 	 * (non-Javadoc)
@@ -155,7 +166,8 @@ public class UserDaoImpl implements UserDao {
 			stmt = this.connection.prepareStatement(sql);
 			stmt.setString(1, valueObject.getPassword());
 			stmt.setString(2, valueObject.getName());
-			stmt.setString(3, valueObject.getRoles().get(0).getRole());
+			String roleString = getRoleString(valueObject);
+			stmt.setString(3, roleString);
 
 			stmt.setString(4, valueObject.getId());
 
