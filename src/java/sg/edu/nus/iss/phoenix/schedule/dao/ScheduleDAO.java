@@ -6,6 +6,7 @@
 package sg.edu.nus.iss.phoenix.schedule.dao;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.util.List;
@@ -39,7 +40,7 @@ public interface ScheduleDAO {
                       * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException 
                       * @throws java.sql.SQLException 
 	 */
-	public abstract ProgramSlot getObject(Timestamp dateOfProgram)
+	public abstract ProgramSlot getObject(Date dateOfProgram)
 			throws NotFoundException, SQLException;
 
 	/**
@@ -84,8 +85,9 @@ public interface ScheduleDAO {
 	 *            automatic surrogate-keys are not used the Primary-key field
 	 *            must be set for this to work properly.
                       * @throws java.sql.SQLException
+                      * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException
 	 */
-	public abstract void create(ProgramSlot valueObject) throws SQLException;
+	public abstract void create(ProgramSlot valueObject) throws SQLException,NotFoundException;
 
 	/**
 	 * save-method. This method will save the current state of valueObject to
@@ -101,7 +103,7 @@ public interface ScheduleDAO {
                       * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException
                       * @throws java.sql.SQLException
 	 */
-	public abstract void save(ProgramSlot valueObject)
+	public abstract void update(ProgramSlot valueObject)
 			throws NotFoundException, SQLException;
 
 	/**
@@ -169,9 +171,6 @@ public interface ScheduleDAO {
 	public abstract List<ProgramSlot> searchMatching(ProgramSlot valueObject)
 			throws SQLException;
         
-                        /*Copy Process*/
-                      public abstract void copy(ProgramSlot valueObject)
-			throws NotFoundException, SQLException;
-
+                     
     
 }

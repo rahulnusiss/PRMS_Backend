@@ -5,8 +5,7 @@
  */
 package sg.edu.nus.iss.phoenix.schedule.restful;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLDecoder;
+import java.sql.Date;
 import java.util.ArrayList;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
@@ -37,28 +36,34 @@ public class ScheduleRESTService {
     private final ScheduleService service;
 
     /**
-     * Creates a new instance of RadioProgramRESTService
+     * Creates a new instance of ScheduleRESTService
      */
     public ScheduleRESTService() {
         service = new ScheduleService();
     }
 
-    /**
+    
+   /**
      * Retrieves representation of an instance of resource
-     * @param psName
+     * @param date
      * @return an instance of resource
      */
     @GET
-    @Path("/retrieve")
+    @Path("/retrieve/{date}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ProgramSlot getProgramSlot(String psName) {
+    public ProgramSlot getProgramSlot(@PathParam("date") Date date) {
        ProgramSlot ps = null;
-        if(psName != null){
-        ps = service.findProgramSlot(psName);
+        if(date != null){
+        ps = service.findProgramSlotByDate(date);
         }
         return ps;
     }
+  
     
+    /**
+     *Retrieves all Program Slots
+     * @return
+     */
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)
@@ -75,7 +80,7 @@ public class ScheduleRESTService {
     }
     
     /**
-     * PUT method for updating or creating an instance of resource
+     * PUT method for updating an instance of resource
      * @param ps
      */
     @POST
@@ -98,22 +103,13 @@ public class ScheduleRESTService {
    
     /**
      * DELETE method for deleting an instance of resource
-     * @param name
+     * @param inputDate
      */
     @DELETE
-    @Path("/delete/{psname}")
+    @Path("/delete/{date}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void deleteSchedule(@PathParam("psname") String name) {
-        String name2;
-        try { 
-            name2 = URLDecoder.decode(name, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace(); 
-            return;
-        }
-
-        service.processDelete(name2);
+    public void deleteSchedule(@PathParam("date") String inputDate) {
+          service.processDelete(inputDate);
     }
 
-    
 }

@@ -6,8 +6,6 @@
 package sg.edu.nus.iss.phoenix.schedule.delegate;
 
 import java.util.ArrayList;
-import sg.edu.nus.iss.phoenix.radioprogram.entity.RadioProgram;
-import sg.edu.nus.iss.phoenix.radioprogram.service.ProgramService;
 import sg.edu.nus.iss.phoenix.schedule.entity.ProgramSlot;
 import sg.edu.nus.iss.phoenix.schedule.service.ScheduleService;
 

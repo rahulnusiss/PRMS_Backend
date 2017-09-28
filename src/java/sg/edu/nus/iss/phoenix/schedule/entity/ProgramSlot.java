@@ -4,8 +4,8 @@
  * and open the template in the editor.
  */
 package sg.edu.nus.iss.phoenix.schedule.entity;
+import java.sql.Date;
 import java.sql.Time;
-import java.sql.Timestamp;
 
 /**
  *
@@ -13,9 +13,10 @@ import java.sql.Timestamp;
  */
 public class ProgramSlot {
     
+    private Integer id;
+    private Date dateofProgram;
+    private Time startTime;
     private Time duration;
-    private Timestamp dateofProgram;
-    private Timestamp startTime;
     private String programName;
 
     /**
@@ -24,7 +25,6 @@ public class ProgramSlot {
     public ProgramSlot() {
         
     }
-
     
     /**
      *Parameterized Constructor for programSlot
@@ -33,14 +33,24 @@ public class ProgramSlot {
      * @param startTime
      * @param programName
      */
-    public ProgramSlot(Time duration, Timestamp dateofProgram, Timestamp startTime, String programName) {
+    public ProgramSlot(Time duration, Date dateofProgram, Time startTime, String programName) {
         this.duration = duration;
         this.dateofProgram = dateofProgram;
         this.startTime = startTime;
         this.programName = programName;
     }
 
-    public void setDateofProgram(Timestamp dateofProgram) {
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    
+    
+    public void setDateofProgram(Date dateofProgram) {
         this.dateofProgram = dateofProgram;
     }
 
@@ -52,11 +62,11 @@ public class ProgramSlot {
         this.programName = programName;
     }
 
-    public void setStartTime(Timestamp startTime) {
+    public void setStartTime(Time startTime) {
         this.startTime = startTime;
     }
 
-    public Timestamp getDateofProgram() {
+    public Date getDateofProgram() {
         return dateofProgram;
     }
 
@@ -68,51 +78,11 @@ public class ProgramSlot {
         return programName;
     }
 
-    public Timestamp getStartTime() {
+    public Time getStartTime() {
         return startTime;
     }
     
     
-     /** 
-     * hasEqualMapping-method will compare two ProgramSlot instances
-     * and return true if they contain same values in all persistent instance 
-     * variables. If hasEqualMapping returns true, it does not mean the objects
-     * are the same instance. However it does mean that in that moment, they 
-     * are mapped to the same row in database.
-     * @param valueObject
-     * @return 
-     */
-    public boolean hasEqualMapping(ProgramSlot valueObject) {
-
-          if (this.dateofProgram == null) {
-                    if (valueObject.getDateofProgram() != null)
-                           return(false);
-          } else if (!this.dateofProgram.equals(valueObject.getDateofProgram())) {
-                    return(false);
-          }
-          if (this.duration == null) {
-                    if (valueObject.getDuration() != null)
-                           return(false);
-          } else if (!this.duration.equals(valueObject.getDuration())) {
-                    return(false);
-          }
-          if (this.programName == null) {
-                    if (valueObject.getProgramName() != null)
-                           return(false);
-          } else if (!this.programName.equals(valueObject.getProgramName())) {
-                    return(false);
-          }
-          
-          if (this.startTime == null) {
-                    if (valueObject.getStartTime() != null)
-                           return(false);
-          } else if (!this.startTime.equals(valueObject.getStartTime())) {
-                    return(false);
-          }
-
-          return true;
-    }
-
     /**
      * toString will return String object representing the state of this 
      * valueObject. This is useful during application development, and 
@@ -128,30 +98,6 @@ public class ProgramSlot {
         out.append("program Name = ").append(this.programName).append("\n"); 
         out.append("startTime = ").append(this.startTime).append("\n"); 
         return out.toString();
-    }
-
-
-    /**
-     * Clone will return identical deep copy of this valueObject.
-     * Note, that this method is different than the clone() which
-     * is defined in java.lang.Object. Here, the returned cloned object
-     * will also have all its attributes cloned.
-     * @return 
-     * @throws java.lang.CloneNotSupportedException 
-     */
-        @Override
-    public Object clone() throws CloneNotSupportedException {
-        ProgramSlot cloned = new ProgramSlot();
-
-        if (this.dateofProgram != null)
-             cloned.setDateofProgram((Timestamp)this.dateofProgram.clone());
-        if (this.startTime != null)
-             cloned.setStartTime((Timestamp)this.startTime.clone()); 
-        if (this.programName != null)
-             cloned.setProgramName(this.programName); 
-        if (this.duration != null)
-             cloned.setDuration((Time)this.duration.clone()); 
-        return cloned;
     }
 
 }
