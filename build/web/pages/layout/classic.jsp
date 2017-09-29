@@ -17,3 +17,4 @@
 		<td colspan="2"><tiles:insertAttribute name="footer" /></td>
 	</tr>
 </table>
+

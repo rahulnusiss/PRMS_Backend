@@ -10,3 +10,4 @@
 <h3>
 	<fmt:message key="caption.welcome" />
 </h3>
+

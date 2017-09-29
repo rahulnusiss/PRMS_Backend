@@ -68,12 +68,15 @@ public class ScheduleRESTServiceTest {
     @Test
     public void testGetProgramSlot() {
         System.out.println("getProgramSlot");
+        
         ScheduleRESTService instance = new ScheduleRESTService();
         ProgramSlot expectedPs = new ProgramSlot();
         expectedPs.setProgramName("test");
         expectedPs.setDateofProgram(getFormatedDate("2017-09-14"));
         expectedPs.setStartTime(Time.valueOf("07:30:00"));
         expectedPs.setDuration(Time.valueOf("03:00:00"));
+        expectedPs.setPresenterId("dilbert");
+        expectedPs.setProducerId("wally");
         
         instance.createSchedule(expectedPs);
         ProgramSlot resultPs=  instance.getProgramSlot(getFormatedDate("2017-09-14"));
@@ -82,6 +85,8 @@ public class ScheduleRESTServiceTest {
         assertEquals(expectedPs.getDuration(), resultPs.getDuration());
         assertEquals(expectedPs.getStartTime(), resultPs.getStartTime());
         assertEquals(expectedPs.getProgramName(), resultPs.getProgramName());
+        assertEquals(expectedPs.getPresenterId(), resultPs.getPresenterId());
+        assertEquals(expectedPs.getProducerId(), resultPs.getProducerId());
         
     }
 
@@ -101,6 +106,8 @@ public class ScheduleRESTServiceTest {
                 expectedPs.setDuration(Time.valueOf("00:30:00"));
                 expectedPs.setStartTime(Time.valueOf("12:30:00"));
                 expectedPs.setProgramName("test");
+                expectedPs.setPresenterId("dilbert");
+                expectedPs.setProducerId("wally");
                 
                 instance.createSchedule(expectedPs);
                 result = instance.getAllProgramSlots();
@@ -123,6 +130,9 @@ public class ScheduleRESTServiceTest {
         expectedPs.setDuration(Time.valueOf("00:30:00"));
         expectedPs.setStartTime(Time.valueOf("12:30:00"));
         expectedPs.setProgramName("test");
+        expectedPs.setPresenterId("dilbert");
+        expectedPs.setProducerId("wally");
+                
 
         instance.createSchedule(expectedPs);
         ProgramSlot resultPs=  instance.getProgramSlot(getFormatedDate("2018-09-14"));
@@ -145,6 +155,9 @@ public class ScheduleRESTServiceTest {
         sampleProgramSlot.setStartTime(Time.valueOf("09:00:00"));
         sampleProgramSlot.setDuration(Time.valueOf("01:00:00"));
         sampleProgramSlot.setProgramName("test");
+        sampleProgramSlot.setPresenterId("dilbert");
+        sampleProgramSlot.setProducerId("wally");
+                
         
         ScheduleRESTService instance = new ScheduleRESTService();
         
@@ -159,15 +172,19 @@ public class ScheduleRESTServiceTest {
         editProgramSlot.setProgramName("test");
         editProgramSlot.setStartTime(Time.valueOf("13:20:00"));
         editProgramSlot.setDuration(Time.valueOf("0:30:00"));
+        editProgramSlot.setPresenterId("dilbert");
+        editProgramSlot.setProducerId("wally");
         //editProgramSlot.setDateofProgram(getFormatedDate("2016-09-09"));
         
         instance.modifySchedule(editProgramSlot);
         ProgramSlot targetProgramSlot = instance.getProgramSlot(getFormatedDate("2017-09-29"));
-        // TODO review the generated test code and remove the default call to fail.
+       
         assertEquals(editProgramSlot.getProgramName(), targetProgramSlot.getProgramName());
         assertEquals(editProgramSlot.getStartTime(), targetProgramSlot.getStartTime());
         assertEquals(editProgramSlot.getDuration() , targetProgramSlot.getDuration());
         assertEquals(editProgramSlot.getDateofProgram(), targetProgramSlot.getDateofProgram());
+        assertEquals(editProgramSlot.getPresenterId(), targetProgramSlot.getPresenterId());
+        assertEquals(editProgramSlot.getProducerId(), targetProgramSlot.getProducerId());
         
         
     }
@@ -184,6 +201,9 @@ public class ScheduleRESTServiceTest {
         sampleProgramSlot.setStartTime(Time.valueOf("08:00:00"));
         sampleProgramSlot.setDuration(Time.valueOf("02:00:00"));
         sampleProgramSlot.setProgramName("test");
+        sampleProgramSlot.setPresenterId("dilbert");
+        sampleProgramSlot.setProducerId("wally");
+        
         
         ScheduleRESTService instance = new ScheduleRESTService();
         ProgramSlot ps = instance.getProgramSlot(getFormatedDate("2017-09-28"));

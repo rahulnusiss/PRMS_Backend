@@ -15,8 +15,11 @@ import java.sql.Time;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import sg.edu.nus.iss.phoenix.core.dao.DBConstants;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
+import sg.edu.nus.iss.phoenix.core.exceptions.ProgramSlotOverlapException;
 import sg.edu.nus.iss.phoenix.schedule.dao.ScheduleDAO;
 import sg.edu.nus.iss.phoenix.schedule.entity.ProgramSlot;
 import sg.edu.nus.iss.phoenix.schedule.helper.ScheduleHelper;
@@ -28,6 +31,8 @@ import sg.edu.nus.iss.phoenix.schedule.helper.ScheduleHelper;
 public class ScheduleDAOImpl implements ScheduleDAO {
 
     Connection connection;
+    Logger logger = LoggerFactory.getLogger(ScheduleDAOImpl.class);
+
 
     @Override
     public ProgramSlot createValueObject() {
@@ -84,23 +89,28 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         int rowcount;
         openConnection();
         try {
-            sql = "INSERT into `program-slot` (`duration`,\n" + "`dateOfProgram`,\n" + "`startTime`,\n" + "`program-name`) VALUES (?,?,?,?);";
+            sql = "INSERT into `program-slot` (`duration`,\n" + "`dateOfProgram`,\n" + "`startTime`,\n" + "`program-name`,\n" + "`presenter-id`,\n" + "`producer-id`) VALUES (?,?,?,?,?,?);";
             stmt = connection.prepareStatement(sql);
             stmt.setTime(1, valueObject.getDuration());
             stmt.setDate(2, valueObject.getDateofProgram());
             stmt.setTime(3, valueObject.getStartTime());
             stmt.setString(4, valueObject.getProgramName());
+            stmt.setString(5, valueObject.getPresenterId());
+            stmt.setString(6,valueObject.getProducerId());
 
             if (!checkProgramSlotAssigned(valueObject)) {
                 rowcount = databaseUpdate(stmt);
             } else {
-              throw new NotFoundException("Entered Program Slot Overlaps with existing Program Slots(In Create): Try to change startTime or duration");
+              throw new ProgramSlotOverlapException("Entered Program Slot Overlaps with existing Program Slots(In Create): Try to change startTime or dateofProgram");
             }
 
             if (rowcount != 1) {
                 throw new SQLException("PrimaryKey Error when updating DB");
             }
 
+        }catch(ProgramSlotOverlapException ex){
+                        logger.error(ex.getMessage());
+                
         } finally {
             if (stmt != null) {
                 stmt.close();
@@ -111,7 +121,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
 
     @Override
     public void update(ProgramSlot valueObject) throws NotFoundException, SQLException {
-        String sql = "UPDATE  `program-slot` SET  `startTime` = ?, `duration` = ?,`program-name`= ?   WHERE (`dateOfProgram`=?);";
+        String sql = "UPDATE  `program-slot` SET  `startTime` = ?, `duration` = ?,`program-name`= ? ,`presenter-id`=?,`producer-id`=?  WHERE (`dateOfProgram`=?);";
         PreparedStatement stmt = null;
         int rowcount = 0;
         openConnection();
@@ -120,11 +130,13 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             stmt.setTime(1, valueObject.getStartTime());
             stmt.setTime(2, valueObject.getDuration());
             stmt.setString(3, valueObject.getProgramName());
-            stmt.setDate(4, valueObject.getDateofProgram());
+            stmt.setString(4, valueObject.getPresenterId());
+            stmt.setString(5, valueObject.getProducerId());
+            stmt.setDate(6, valueObject.getDateofProgram());
            if (!checkProgramSlotAssigned(valueObject)) {
                 rowcount = databaseUpdate(stmt);
            }else{
-                throw new NotFoundException("Entered Program Slot Overlaps with existing Program Slots: Try to change startTime or duration");
+                throw new ProgramSlotOverlapException("Entered Program Slot Overlaps with existing Program Slots: Try to change startTime or dateofProgram");
            }
             if (rowcount == 0) {
                 throw new NotFoundException("Object could not be saved! (Primarykey not found)");
@@ -134,6 +146,9 @@ public class ScheduleDAOImpl implements ScheduleDAO {
                 throw new SQLException("PrimaryKey Error when updatingDB !(Many objects were affected)");
 
             }
+        }catch(ProgramSlotOverlapException ex){
+                        logger.error(ex.getMessage());
+                
         } finally {
             if (stmt != null) {
                 stmt.close();
@@ -178,47 +193,6 @@ public class ScheduleDAOImpl implements ScheduleDAO {
     }
 
     @Override
-    public void deleteAll(Connection conn) throws SQLException {
-        String sql = "DELETE FROM `program-slot`";
-        PreparedStatement stmt = null;
-        openConnection();
-        try {
-            stmt = connection.prepareStatement(sql);
-            int rowcount = databaseUpdate(stmt);
-            System.out.println("" + rowcount);
-        } finally {
-            if (stmt != null) {
-                stmt.close();
-            }
-            closeConnection();
-
-        }
-
-    }
-
-    @Override
-    public int countAll() throws SQLException {
-
-        String sql = "SELECT count(*) FROM `program-slot`";
-        PreparedStatement stmt = null;
-        ResultSet result = null;
-        int allRows = 0;
-        openConnection();
-        try {
-            stmt = connection.prepareStatement(sql);
-            result = stmt.executeQuery();
-
-            if (result.next()) {
-                allRows = result.getInt(1);
-            }
-
-        } finally {
-
-        }
-        return allRows;
-    }
-
-    @Override
     public List<ProgramSlot> searchMatching(ProgramSlot valueObject) throws SQLException {
 
         List<ProgramSlot> searchResults = new ArrayList<>();
@@ -260,6 +234,20 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             }
             sql.append(" AND `id` = ").append(valueObject.getId()).append(" ");
         }
+        
+        if (valueObject.getPresenterId()!= null) {
+            if (first) {
+                first = false;
+            }
+            sql.append(" AND `presenter-id` = ").append(valueObject.getId()).append(" ");
+        }
+        
+        if (valueObject.getId() != null) {
+            if (first) {
+                first = false;
+            }
+            sql.append(" AND `producer-id` = ").append(valueObject.getId()).append(" ");
+        }
 
         sql.append("ORDER BY `program-name` ASC");
         if (first) {
@@ -284,6 +272,8 @@ public class ScheduleDAOImpl implements ScheduleDAO {
                 valueObject.setDateofProgram(result.getDate("dateOfProgram"));
                 valueObject.setDuration(result.getTime("duration"));
                 valueObject.setStartTime(result.getTime("startTime"));
+                valueObject.setPresenterId(result.getString("presenter-id"));
+                valueObject.setProducerId(result.getString("producer-id"));
 
             } else {
                 throw new NotFoundException("ProgramSlot Object Not Found!");
@@ -362,7 +352,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             result = stmt.executeQuery();
             
             if (!result.next() ) {    
-                System.out.println("No data");
+                System.out.println("zero records retrieved");
                  /*To handle when result set doesnot contains any record*/
                 ProgramSlot empty = null;
                 searchResults.add(empty);
@@ -373,12 +363,12 @@ public class ScheduleDAOImpl implements ScheduleDAO {
                
                 ProgramSlot temp = createValueObject();
                 temp.setDateofProgram(result.getDate("dateOfProgram"));
-                Time duration = result.getTime("duration");
-                
                 temp.setDuration(result.getTime("duration"));
                 String timeFormat = formatter.format(result.getTime("startTime"));
                 temp.setStartTime(Time.valueOf(timeFormat));
                 temp.setProgramName(result.getString("program-name"));
+                temp.setPresenterId(result.getString("presenter-id"));
+                temp.setProducerId(result.getString("producer-id"));
 
                 searchResults.add(temp);
 

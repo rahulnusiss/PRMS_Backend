@@ -36,11 +36,13 @@ public class ProgramSlot {
      * @param startTime
      * @param programName
      */
-    public ProgramSlot(Time duration, Date dateofProgram, Time startTime, String programName) {
+    public ProgramSlot(Time duration, Date dateofProgram, Time startTime, String programName, String PresenterId,String ProducerId) {
         this.duration = duration;
         this.dateofProgram = dateofProgram;
         this.startTime = startTime;
         this.programName = programName;
+        this.presenterId=PresenterId;
+        this.producerId=ProducerId;
     }
 
     public void setPresenterId(String presenterId) {
@@ -118,6 +120,9 @@ public class ProgramSlot {
         out.append("duration = ").append(this.duration).append("\n");
         out.append("program Name = ").append(this.programName).append("\n"); 
         out.append("startTime = ").append(this.startTime).append("\n"); 
+        out.append("presenterId = ").append(this.startTime).append("\n"); 
+        out.append("producerId = ").append(this.startTime).append("\n"); 
+        
         return out.toString();
     }
 

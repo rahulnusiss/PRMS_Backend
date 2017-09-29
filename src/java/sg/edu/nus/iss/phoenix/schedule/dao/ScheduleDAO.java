@@ -8,7 +8,6 @@ package sg.edu.nus.iss.phoenix.schedule.dao;
 import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.util.List;
 import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 import sg.edu.nus.iss.phoenix.schedule.entity.ProgramSlot;
@@ -125,35 +124,6 @@ public interface ScheduleDAO {
 			throws NotFoundException, SQLException;
 
 	/**
-	 * deleteAll-method. This method will remove all information from the table
-	 * that matches this Dao and ValueObject couple. This should be the most
-	 * efficient way to clear table. Once deleteAll has been called, no
-	 * valueObject that has been created before can be restored by calling save.
-	 * Restoring can only be done using create method but if database is using
-	 * automatic surrogate-keys, the resulting object will have different
-	 * primary-key than what it was in the deleted object. (Note, the
-	 * implementation of this method should be different with different DB
-	 * backends.)
-	 * 
-	 * @param conn
-	 *            This method requires working database connection.
-                      * @throws java.sql.SQLException
-	 */
-	public abstract void deleteAll(Connection conn) throws SQLException;
-
-	/**
-	 * coutAll-method. This method will return the number of all rows from table
-	 * that matches this Dao. The implementation will simply execute
-	 * "select count(primarykey) from table". If table is empty, the return
-	 * value is 0. This method should be used before calling loadAll, to make
-	 * sure table has not too many rows.
-	 * 
-                      * @return 
-                      * @throws java.sql.SQLException
-	 */
-	public abstract int countAll() throws SQLException;
-
-	/**
 	 * searchMatching-Method. This method provides searching capability to get
 	 * matching valueObjects from database. It works by searching all objects
 	 * that match permanent instance variables of given object. Upper layer
@@ -170,7 +140,5 @@ public interface ScheduleDAO {
 	 */
 	public abstract List<ProgramSlot> searchMatching(ProgramSlot valueObject)
 			throws SQLException;
-        
-                     
     
 }

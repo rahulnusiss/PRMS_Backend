@@ -73,7 +73,7 @@ public class ScheduleRESTService {
         programSlotList.setPsList(new ArrayList<>());
         for (int i = 0; i < pslist.size(); i++) {
             programSlotList.getPsList().add(
-            new ProgramSlot(pslist.get(i).getDuration(), pslist.get(i).getDateofProgram(),pslist.get(i).getStartTime(), pslist.get(i).getProgramName()));
+            new ProgramSlot(pslist.get(i).getDuration(), pslist.get(i).getDateofProgram(),pslist.get(i).getStartTime(), pslist.get(i).getProgramName(),pslist.get(i).getPresenterId(),pslist.get(i).getProducerId()));
                 
         }
    return programSlotList;
