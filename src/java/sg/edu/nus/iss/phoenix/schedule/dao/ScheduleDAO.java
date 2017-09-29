@@ -65,7 +65,7 @@ public interface ScheduleDAO {
 	 * a List containing valueObjects. Please note, that this method will
 	 * consume huge amounts of resources if table has lot's of rows. This should
 	 * only be used when target tables have only small amounts of data.
-	 * 
+	 * P
                       * @return 
                       * @throws java.sql.SQLException
 	 */
