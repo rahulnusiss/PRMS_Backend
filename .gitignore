@@ -22,3 +22,8 @@
 hs_err_pid*
 /nbproject/private/
 /build/
+
+#Backup Files
+*.orig
+*.java.orig
+*.xml.orig

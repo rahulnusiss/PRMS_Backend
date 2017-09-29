@@ -6,6 +6,7 @@
 package sg.edu.nus.iss.phoenix.schedule.entity;
 import java.sql.Date;
 import java.sql.Time;
+import sg.edu.nus.iss.phoenix.authenticate.entity.User;
 
 /**
  *
@@ -14,6 +15,8 @@ import java.sql.Time;
 public class ProgramSlot {
     
     private Integer id;
+    private String presenterId;
+    private String producerId;
     private Date dateofProgram;
     private Time startTime;
     private Time duration;
@@ -40,6 +43,24 @@ public class ProgramSlot {
         this.programName = programName;
     }
 
+    public void setPresenterId(String presenterId) {
+        this.presenterId = presenterId;
+    }
+
+    public String getPresenterId() {
+        return presenterId;
+    }
+
+    public void setProducerId(String producerId) {
+        this.producerId = producerId;
+    }
+
+    public String getProducerId() {
+        return producerId;
+    }
+    
+   
+ 
     public void setId(Integer id) {
         this.id = id;
     }
