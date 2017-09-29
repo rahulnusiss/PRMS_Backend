@@ -125,6 +125,7 @@ public class UserDaoImpl implements UserDao {
 			stmt.setString(3, valueObject.getName());
                         String roleString = getRoleString(valueObject);
 			stmt.setString(4, roleString);
+			stmt.setString(4, valueObject.getRoles().get(0).getRole());
 
 			int rowcount = databaseUpdate(stmt);
 			if (rowcount != 1) {
@@ -168,6 +169,7 @@ public class UserDaoImpl implements UserDao {
 			stmt.setString(2, valueObject.getName());
 			String roleString = getRoleString(valueObject);
 			stmt.setString(3, roleString);
+			stmt.setString(3, valueObject.getRoles().get(0).getRole());
 
 			stmt.setString(4, valueObject.getId());
 
