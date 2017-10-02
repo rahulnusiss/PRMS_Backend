@@ -54,13 +54,13 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             throw new NotFoundException("Cannot Select without Primary-key! ");
         }
 
-        String sql = "SELECT * FROM `program-slot` WHERE (`dateOfProgram` = ? ); ";
+        String sql = "SELECT * FROM `program-slot` WHERE (`id` = ? ); ";
         PreparedStatement stmt = null;
         openConnection();
 
         try {
             stmt = connection.prepareStatement(sql);
-            stmt.setDate(1, valueObject.getDateofProgram());
+            stmt.setInt(1, valueObject.getId());
             singleQuery(stmt, valueObject);
 
         } finally {
@@ -121,18 +121,19 @@ public class ScheduleDAOImpl implements ScheduleDAO {
 
     @Override
     public void update(ProgramSlot valueObject) throws NotFoundException, SQLException {
-        String sql = "UPDATE  `program-slot` SET  `startTime` = ?, `duration` = ?,`program-name`= ? ,`presenter-id`=?,`producer-id`=?  WHERE (`dateOfProgram`=?);";
+        String sql = "UPDATE  `program-slot` SET  `dateOfProgram`= ?,  `startTime` = ?, `duration` = ?,`program-name`= ? ,`presenter-id`=?,`producer-id`=?  WHERE (`id`=?);";
         PreparedStatement stmt = null;
         int rowcount = 0;
         openConnection();
         try {
             stmt = connection.prepareStatement(sql);
-            stmt.setTime(1, valueObject.getStartTime());
-            stmt.setTime(2, valueObject.getDuration());
-            stmt.setString(3, valueObject.getProgramName());
-            stmt.setString(4, valueObject.getPresenterId());
-            stmt.setString(5, valueObject.getProducerId());
-            stmt.setDate(6, valueObject.getDateofProgram());
+            stmt.setDate(1, valueObject.getDateofProgram());
+            stmt.setTime(2, valueObject.getStartTime());
+            stmt.setTime(3, valueObject.getDuration());
+            stmt.setString(4, valueObject.getProgramName());
+            stmt.setString(5, valueObject.getPresenterId());
+            stmt.setString(6, valueObject.getProducerId());
+            stmt.setInt(7, valueObject.getId());
            if (!checkProgramSlotAssigned(valueObject)) {
                 rowcount = databaseUpdate(stmt);
            }else{
@@ -163,16 +164,16 @@ public class ScheduleDAOImpl implements ScheduleDAO {
     public void delete(ProgramSlot valueObject) throws NotFoundException, SQLException {
 
         if (valueObject.getDateofProgram() == null) {
-            throw new NotFoundException("Can not delete without Primary-key! ");
+            throw new NotFoundException("Can not delete without Primary-key! ....");
         }
 
-        String sql = "DELETE FROM `program-slot` where (`dateOfProgram` = ?);";
+        String sql = "DELETE FROM `program-slot` where (`id`=?);";
         PreparedStatement stmt = null;
         int rowcount = 0;
         openConnection();
         try {
             stmt = connection.prepareStatement(sql);
-            stmt.setDate(1, valueObject.getDateofProgram());
+            stmt.setInt(1, valueObject.getId());
 
             rowcount = databaseUpdate(stmt);
             if (rowcount == 0) {
@@ -259,6 +260,13 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         return searchResults;
     }
 
+    /**
+     *
+     * @param stmt
+     * @param valueObject
+     * @throws NotFoundException
+     * @throws SQLException
+     */
     protected void singleQuery(PreparedStatement stmt, ProgramSlot valueObject)
             throws NotFoundException, SQLException {
 
@@ -274,6 +282,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
                 valueObject.setStartTime(result.getTime("startTime"));
                 valueObject.setPresenterId(result.getString("presenter-id"));
                 valueObject.setProducerId(result.getString("producer-id"));
+                valueObject.setId(result.getInt("id"));
 
             } else {
                 throw new NotFoundException("ProgramSlot Object Not Found!");
@@ -334,6 +343,12 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         }
     }
 
+    /**
+     *
+     * @param stmt
+     * @return
+     * @throws SQLException
+     */
     protected int databaseUpdate(PreparedStatement stmt) throws SQLException {
 
         int result = stmt.executeUpdate();
@@ -369,6 +384,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
                 temp.setProgramName(result.getString("program-name"));
                 temp.setPresenterId(result.getString("presenter-id"));
                 temp.setProducerId(result.getString("producer-id"));
+                temp.setId(result.getInt("id"));
 
                 searchResults.add(temp);
 

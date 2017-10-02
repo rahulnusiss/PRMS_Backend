@@ -6,7 +6,11 @@
 package sg.edu.nus.iss.phoenix.schedule.restful;
 
 import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -45,18 +49,46 @@ public class ScheduleRESTService {
     
    /**
      * Retrieves representation of an instance of resource
-     * @param date
+     * @param id
      * @return an instance of resource
      */
     @GET
-    @Path("/retrieve/{date}")
+    @Path("/retrieve/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public ProgramSlot getProgramSlot(@PathParam("date") Date date) {
+    public ProgramSlot getProgramSlotById(@PathParam("id") Integer id) {
        ProgramSlot ps = null;
-        if(date != null){
-        ps = service.findProgramSlotByDate(date);
+        if(id != null){
+        ps = service.findProgramSlotById(id);
         }
         return ps;
+    }
+    
+     /**
+     * Retrieves representation of an instance of resource
+     * @param dateofProgram
+     * @return an instance of resource
+     */
+    @GET
+    @Path("/retrievebyDate/{date}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public ProgramSlot getProgramSlotByDate(@PathParam("date") String dateofProgram) {
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+       
+            java.util.Date date =null;
+        try {
+            date = dateFormatter.parse(dateofProgram);
+        } catch (ParseException ex) {
+            Logger.getLogger(ScheduleRESTService.class.getName()).log(Level.SEVERE, null, ex);
+        }
+            if(date!=null){    
+        java.sql.Date sqlDateOfProgram = new java.sql.Date(date.getTime());
+            
+       ProgramSlot ps = service.findProgramSlotByDate(sqlDateOfProgram);
+        
+        return ps;
+        
+    }
+            return null;
     }
   
     
@@ -73,7 +105,7 @@ public class ScheduleRESTService {
         programSlotList.setPsList(new ArrayList<>());
         for (int i = 0; i < pslist.size(); i++) {
             programSlotList.getPsList().add(
-            new ProgramSlot(pslist.get(i).getDuration(), pslist.get(i).getDateofProgram(),pslist.get(i).getStartTime(), pslist.get(i).getProgramName(),pslist.get(i).getPresenterId(),pslist.get(i).getProducerId()));
+            new ProgramSlot(pslist.get(i).getId(),pslist.get(i).getDuration(), pslist.get(i).getDateofProgram(),pslist.get(i).getStartTime(), pslist.get(i).getProgramName(),pslist.get(i).getPresenterId(),pslist.get(i).getProducerId()));
                 
         }
    return programSlotList;
@@ -103,13 +135,13 @@ public class ScheduleRESTService {
    
     /**
      * DELETE method for deleting an instance of resource
-     * @param inputDate
+     * @param id
      */
     @DELETE
-    @Path("/delete/{date}")
+    @Path("/delete/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void deleteSchedule(@PathParam("date") String inputDate) {
-          service.processDelete(inputDate);
+    public void deleteSchedule(@PathParam("id") int id) {
+          service.processDelete(id);
     }
 
 }

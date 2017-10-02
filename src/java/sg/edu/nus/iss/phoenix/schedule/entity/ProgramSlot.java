@@ -6,7 +6,6 @@
 package sg.edu.nus.iss.phoenix.schedule.entity;
 import java.sql.Date;
 import java.sql.Time;
-import sg.edu.nus.iss.phoenix.authenticate.entity.User;
 
 /**
  *
@@ -36,7 +35,8 @@ public class ProgramSlot {
      * @param startTime
      * @param programName
      */
-    public ProgramSlot(Time duration, Date dateofProgram, Time startTime, String programName, String PresenterId,String ProducerId) {
+    public ProgramSlot(int id,Time duration, Date dateofProgram, Time startTime, String programName, String PresenterId,String ProducerId) {
+        this.id=id;
         this.duration = duration;
         this.dateofProgram = dateofProgram;
         this.startTime = startTime;
@@ -71,8 +71,6 @@ public class ProgramSlot {
         return id;
     }
 
-    
-    
     public void setDateofProgram(Date dateofProgram) {
         this.dateofProgram = dateofProgram;
     }

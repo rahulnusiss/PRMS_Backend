@@ -27,3 +27,4 @@ hs_err_pid*
 *.orig
 *.java.orig
 *.xml.orig
+/dist/

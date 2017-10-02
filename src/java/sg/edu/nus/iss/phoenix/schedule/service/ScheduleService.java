@@ -111,14 +111,15 @@ public class ScheduleService {
 
     }
 
-    public void processDelete(String dateofProgram) {
+    public void processDelete(int id) {
 
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+        /*If we are deleting by date we need to format the string to date */
+        //SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
         try {
-            java.util.Date date = dateFormatter.parse(dateofProgram);
-            java.sql.Date sqlDateOfProgram = new java.sql.Date(date.getTime());
+            //java.util.Date date = dateFormatter.parse(dateofProgram);
+            //java.sql.Date sqlDateOfProgram = new java.sql.Date(date.getTime());
 
-            ProgramSlot ps = findProgramSlotByDate(sqlDateOfProgram);
+            ProgramSlot ps = findProgramSlotById(id);
             if (ps != null) {
                 sdao.delete(ps);
             } else {
@@ -126,9 +127,9 @@ public class ScheduleService {
             }
         } catch (NotFoundException | SQLException e) {
             logger.error(" EXCEPTION: " + e.getMessage());
-        } catch (ParseException ex) {
+        } /*catch (ParseException ex) {
             logger.error("Parse EXCEPTION: " + ex.getMessage());
-        }
+        }*/
     }
 
 }
