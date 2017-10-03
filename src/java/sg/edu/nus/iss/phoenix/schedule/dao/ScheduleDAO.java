@@ -5,7 +5,6 @@
  */
 package sg.edu.nus.iss.phoenix.schedule.dao;
 
-import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.util.List;
@@ -20,7 +19,7 @@ public interface ScheduleDAO {
     
     
 	/**
-	 * createValueObject-method. This method is used when the Dao class needs to
+	 * createValueObject-method. This method is used when the DAO class needs to
 	 * create new value object instance. The reason why this method exists is
 	 * that sometimes the programmer may want to extend also the valueObject and
 	 * then this method can be over-rided to return extended valueObject.
@@ -83,10 +82,11 @@ public interface ScheduleDAO {
 	 *            This parameter contains the class instance to be created. If
 	 *            automatic surrogate-keys are not used the Primary-key field
 	 *            must be set for this to work properly.
+                      * @return the status 
                       * @throws java.sql.SQLException
                       * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException
 	 */
-	public abstract void create(ProgramSlot valueObject) throws SQLException,NotFoundException;
+	public abstract boolean create(ProgramSlot valueObject) throws SQLException,NotFoundException;
 
 	/**
 	 * save-method. This method will save the current state of valueObject to
@@ -99,10 +99,11 @@ public interface ScheduleDAO {
 	 * @param valueObject
 	 *            This parameter contains the class instance to be saved.
 	 *            Primary-key field must be set for this to work properly.
+                      * @return status of modification of record in database 
                       * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException
                       * @throws java.sql.SQLException
 	 */
-	public abstract void update(ProgramSlot valueObject)
+	public abstract boolean update(ProgramSlot valueObject)
 			throws NotFoundException, SQLException;
 
 	/**
@@ -117,10 +118,11 @@ public interface ScheduleDAO {
 	 * @param valueObject
 	 *            This parameter contains the class instance to be deleted.
 	 *            Primary-key field must be set for this to work properly.
+                      * @return status of deletion of record from database 
                       * @throws sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException
                       * @throws java.sql.SQLException
 	 */
-	public abstract void delete(ProgramSlot valueObject)
+	public abstract boolean delete(ProgramSlot valueObject)
 			throws NotFoundException, SQLException;
 
 	/**

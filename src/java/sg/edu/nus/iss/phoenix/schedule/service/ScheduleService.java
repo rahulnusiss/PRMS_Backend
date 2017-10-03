@@ -7,8 +7,6 @@ package sg.edu.nus.iss.phoenix.schedule.service;
 
 import java.sql.Date;
 import java.sql.SQLException;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +23,24 @@ import sg.edu.nus.iss.phoenix.core.exceptions.NotFoundException;
 public class ScheduleService {
 
     DAOFactoryImpl factory;
-    ProgramDAO rpdao;
     ScheduleDAO sdao;
 
     Logger logger = LoggerFactory.getLogger(ScheduleService.class);
 
+    /**
+     *default constructor to retrieve scheduleDAO object
+     */
     public ScheduleService() {
         super();
         factory = new DAOFactoryImpl();
         sdao = factory.getScheduleDAO();
     }
 
+    /**
+     *
+     * @param ps
+     * @return
+     */
     public ArrayList<ProgramSlot> findProgramSlotByCriteria(ProgramSlot ps) {
         ArrayList<ProgramSlot> currentList = new ArrayList<>();
 
@@ -49,6 +54,11 @@ public class ScheduleService {
 
     }
 
+    /**
+     *
+     * @param date
+     * @return ProgramSlot based on date
+     */
     public ProgramSlot findProgramSlotByDate(Date date) {
         ProgramSlot currentps = new ProgramSlot();
         currentps.setDateofProgram(date);
@@ -63,6 +73,11 @@ public class ScheduleService {
 
     }
 
+    /**
+     *
+     * @param id
+     * @return ProgramSlot based on Id
+     */
     public ProgramSlot findProgramSlotById(int id) {
         ProgramSlot currentps = new ProgramSlot();
         currentps.setId(id);
@@ -77,6 +92,10 @@ public class ScheduleService {
 
     }
 
+    /**
+     *
+     * @return  list of all ProgramSlots
+     */
     public ArrayList<ProgramSlot> findAllProgramSlots() {
         ArrayList<ProgramSlot> currentList = new ArrayList<>();
         try {
@@ -88,48 +107,79 @@ public class ScheduleService {
 
     }
 
-    public void processCreate(ProgramSlot ps) {
+    /**
+     *
+     * @param ps ProgramSlot to create
+     * @return the status and message
+     */
+    public String processCreate(ProgramSlot ps) {
+        String status="";
         try {
-            sdao.create(ps);
+            if(sdao.create(ps)){
+                     status= "{\"status\":\"true\",\"message\":\"ProgramSlot details Inserted Successfully...\"}";   
+            }
         } catch (SQLException e) {
             logger.error("SQL EXCEPTION: " + e.getMessage());
+            status = "{\"status\":\"false\",\"message\":\" SQLException while creating ProgramSlot...\"}";
         } catch (NotFoundException e) {
             logger.error("NotFound EXCEPTION: " + e.getMessage());
+            status = "{\"status\":\"false\",\"message\":\" ProgramSlot with given details not found...\"}";
         }
+        return status;
     }
 
-    public void processModify(ProgramSlot ps) {
-
+    /**
+     *
+     * @param ps ProgramSlot to modify
+     * @return the status
+     */
+    public String processModify(ProgramSlot ps) {
+            String status="";
         try {
-            sdao.update(ps);
+            if(sdao.update(ps)){
+                     status= "{\"status\":\"true\",\"message\":\"ProgramSlot Modified Successfully...\"}";   
+            }
+            
         } catch (NotFoundException e) {
             logger.error("Not Found EXCEPTION: " + e.getMessage());
+            status = "{\"status\":\"false\",\"message\":\" ProgramSlot with given details not found...\"}";
 
         } catch (SQLException e) {
             logger.error("SQL EXCEPTION: " + e.getMessage());
+            status = "{\"status\":\"false\",\"message\":\" SQL Exception Occured while Modifying ProgramSlot...\"}";
         }
-
+        return status;
     }
 
-    public void processDelete(int id) {
-
-        /*If we are deleting by date we need to format the string to date */
-        //SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
+    /**
+     *
+     * @param id
+     * @return the deletion status
+     */
+    public String processDelete(int id) {
+        String status="";
+        
         try {
-            //java.util.Date date = dateFormatter.parse(dateofProgram);
-            //java.sql.Date sqlDateOfProgram = new java.sql.Date(date.getTime());
 
             ProgramSlot ps = findProgramSlotById(id);
             if (ps != null) {
-                sdao.delete(ps);
+    
+                if ( sdao.delete(ps)) {
+                    status = "{\"status\":\"true\",\"message\":\"ProgramSlot deleted Successfully...\"}";
+                } 
             } else {
-                throw new NotFoundException("Program Slot object not found for given date");
+                throw new NotFoundException("Program Slot object not found for given id");
+                
             }
-        } catch (NotFoundException | SQLException e) {
-            logger.error(" EXCEPTION: " + e.getMessage());
-        } /*catch (ParseException ex) {
-            logger.error("Parse EXCEPTION: " + ex.getMessage());
-        }*/
+        } catch (NotFoundException e) {
+            logger.error(" NotFoundException: " + e.getMessage());
+            status = "{\"status\":\"false\",\"message\":\" ProgramSlot with given Id not found... \"}";
+        }catch (SQLException e) {
+            logger.error(" SQLException: " + e.getMessage());
+            status = "{\"status\":\"false\",\"message\":\" SQL Exception Occured while deleting ProgramSlot... \"}";
+        }
+        
+        return status;
     }
 
 }

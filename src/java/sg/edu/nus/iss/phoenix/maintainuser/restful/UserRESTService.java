@@ -71,6 +71,10 @@ public class UserRESTService {
         return user;
     }
     
+    /**
+     *
+     * @return
+     */
     @GET
     @Path("/all")
     @Produces(MediaType.APPLICATION_JSON)

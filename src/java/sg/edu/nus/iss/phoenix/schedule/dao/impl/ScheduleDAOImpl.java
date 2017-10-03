@@ -83,11 +83,12 @@ public class ScheduleDAOImpl implements ScheduleDAO {
     }
 
     @Override
-    public void create(ProgramSlot valueObject) throws SQLException, NotFoundException {
+    public boolean create(ProgramSlot valueObject) throws SQLException, NotFoundException {
         String sql = "";
         PreparedStatement stmt = null;
         int rowcount;
         openConnection();
+        boolean status=false;
         try {
             sql = "INSERT into `program-slot` (`duration`,\n" + "`dateOfProgram`,\n" + "`startTime`,\n" + "`program-name`,\n" + "`presenter-id`,\n" + "`producer-id`) VALUES (?,?,?,?,?,?);";
             stmt = connection.prepareStatement(sql);
@@ -106,10 +107,14 @@ public class ScheduleDAOImpl implements ScheduleDAO {
 
             if (rowcount != 1) {
                 throw new SQLException("PrimaryKey Error when updating DB");
+            }else{
+                   status=true;
             }
+            
 
         }catch(ProgramSlotOverlapException ex){
-                        logger.error(ex.getMessage());
+            logger.error(ex.getMessage());
+            status=false;
                 
         } finally {
             if (stmt != null) {
@@ -117,13 +122,16 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             }
             closeConnection();
         }
+        return status;
     }
 
     @Override
-    public void update(ProgramSlot valueObject) throws NotFoundException, SQLException {
+    public boolean update(ProgramSlot valueObject) throws NotFoundException, SQLException {
+        System.out.println("Request Object---> "+valueObject.toString());
         String sql = "UPDATE  `program-slot` SET  `dateOfProgram`= ?,  `startTime` = ?, `duration` = ?,`program-name`= ? ,`presenter-id`=?,`producer-id`=?  WHERE (`id`=?);";
         PreparedStatement stmt = null;
         int rowcount = 0;
+        boolean status;
         openConnection();
         try {
             stmt = connection.prepareStatement(sql);
@@ -142,13 +150,16 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             if (rowcount == 0) {
                 throw new NotFoundException("Object could not be saved! (Primarykey not found)");
 
-            }
-            if (rowcount > 1) {
+            }else if (rowcount > 1) {
                 throw new SQLException("PrimaryKey Error when updatingDB !(Many objects were affected)");
 
+            }else{
+                    status = true;
             }
+            
         }catch(ProgramSlotOverlapException ex){
                         logger.error(ex.getMessage());
+                        status =false;
                 
         } finally {
             if (stmt != null) {
@@ -157,19 +168,20 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             closeConnection();
 
         }
-
+        return status;
     }
 
     @Override
-    public void delete(ProgramSlot valueObject) throws NotFoundException, SQLException {
+    public boolean delete(ProgramSlot valueObject) throws NotFoundException, SQLException {
 
-        if (valueObject.getDateofProgram() == null) {
+        if (valueObject.getId() == null) {
             throw new NotFoundException("Can not delete without Primary-key! ....");
         }
 
         String sql = "DELETE FROM `program-slot` where (`id`=?);";
         PreparedStatement stmt = null;
         int rowcount = 0;
+        boolean status;
         openConnection();
         try {
             stmt = connection.prepareStatement(sql);
@@ -178,9 +190,10 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             rowcount = databaseUpdate(stmt);
             if (rowcount == 0) {
                 throw new NotFoundException("Object could not be deleted! (PrimaryKey not found)");
-            }
-            if (rowcount > 1) {
+            }else if (rowcount > 1) {
                 throw new SQLException("Primary Key Error when updating DB! (Many objects were deleted)");
+            } else{
+                status = true;
             }
 
         } finally {
@@ -190,7 +203,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             closeConnection();
 
         }
-
+            return status;
     }
 
     @Override
@@ -243,7 +256,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             sql.append(" AND `presenter-id` = ").append(valueObject.getId()).append(" ");
         }
         
-        if (valueObject.getId() != null) {
+        if (valueObject.getProducerId()!= null) {
             if (first) {
                 first = false;
             }
@@ -261,7 +274,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
     }
 
     /**
-     *
+     *Prepare Single Query based on ProgramSlot object
      * @param stmt
      * @param valueObject
      * @throws NotFoundException
@@ -297,66 +310,10 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             closeConnection();
         }
     }
-
-    /*To check the Program has schedule assigned or not*/
-    private boolean checkProgramSlotAssigned(ProgramSlot valueObject) throws SQLException, NotFoundException {
-        ScheduleHelper helper = new ScheduleHelper();
-        String sql = "SELECT * FROM `program-slot` where (`dateOfProgram` = ?);";
-        PreparedStatement stmt = null;
-        openConnection();
-        stmt = connection.prepareStatement(sql);
-        stmt.setDate(1, valueObject.getDateofProgram());
-
-        List<ProgramSlot> psList = listQuery(stmt);
-
-        if (psList.size() > 0) {
-
-            return helper.checkConflict(psList, valueObject);
-        }
-
-        return false;
-    }
-
-    private void openConnection() {
-        try {
-            Class.forName(DBConstants.COM_MYSQL_JDBC_DRIVER);
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-        try {
-            this.connection = DriverManager.getConnection(DBConstants.dbUrl,
-                    DBConstants.dbUserName, DBConstants.dbPassword);
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-
-    }
-
-    private void closeConnection() {
-        try {
-            this.connection.close();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-    }
-
-    /**
-     *
-     * @param stmt
-     * @return
-     * @throws SQLException
-     */
-    protected int databaseUpdate(PreparedStatement stmt) throws SQLException {
-
-        int result = stmt.executeUpdate();
-
-        return result;
-    }
-
-    private List<ProgramSlot> listQuery(PreparedStatement stmt) throws SQLException {
+    
+    
+    
+      private List<ProgramSlot> listQuery(PreparedStatement stmt) throws SQLException {
 
         ArrayList<ProgramSlot> searchResults = new ArrayList<>();
         ResultSet result = null;
@@ -402,6 +359,63 @@ public class ScheduleDAOImpl implements ScheduleDAO {
 
         }
         return (List<ProgramSlot>) searchResults;
+    }
+
+    private boolean checkProgramSlotAssigned(ProgramSlot valueObject) throws SQLException, NotFoundException {
+        ScheduleHelper helper = new ScheduleHelper();
+        String sql = "SELECT * FROM `program-slot` where (`dateOfProgram` = ?);";
+        PreparedStatement stmt = null;
+        openConnection();
+        stmt = connection.prepareStatement(sql);
+        stmt.setDate(1, valueObject.getDateofProgram());
+
+        List<ProgramSlot> psList = listQuery(stmt);
+
+        if (psList.size() > 0) {
+
+            return helper.checkConflict(psList, valueObject);
+        }
+
+        return false;
+    }
+
+    private void openConnection() {
+        try {
+            Class.forName(DBConstants.COM_MYSQL_JDBC_DRIVER);
+        } catch (ClassNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+        try {
+            this.connection = DriverManager.getConnection(DBConstants.dbUrl,
+                    DBConstants.dbUserName, DBConstants.dbPassword);
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+
+    }
+
+    private void closeConnection() {
+        try {
+            this.connection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     *Return the status no. of rows affected while performing crud operation on database
+     * @param stmt
+     * @return
+     * @throws SQLException
+     */
+    protected int databaseUpdate(PreparedStatement stmt) throws SQLException {
+
+        int result = stmt.executeUpdate();
+
+        return result;
     }
 
 }

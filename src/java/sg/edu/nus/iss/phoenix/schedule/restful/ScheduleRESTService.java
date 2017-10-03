@@ -5,7 +5,6 @@
  */
 package sg.edu.nus.iss.phoenix.schedule.restful;
 
-import java.sql.Date;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -73,22 +72,22 @@ public class ScheduleRESTService {
     @Produces(MediaType.APPLICATION_JSON)
     public ProgramSlot getProgramSlotByDate(@PathParam("date") String dateofProgram) {
         SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-       
-            java.util.Date date =null;
+
+        java.util.Date date = null;
         try {
             date = dateFormatter.parse(dateofProgram);
         } catch (ParseException ex) {
             Logger.getLogger(ScheduleRESTService.class.getName()).log(Level.SEVERE, null, ex);
         }
-            if(date!=null){    
-        java.sql.Date sqlDateOfProgram = new java.sql.Date(date.getTime());
-            
-       ProgramSlot ps = service.findProgramSlotByDate(sqlDateOfProgram);
-        
-        return ps;
-        
-    }
-            return null;
+        if (date != null) {
+            java.sql.Date sqlDateOfProgram = new java.sql.Date(date.getTime());
+
+            ProgramSlot ps = service.findProgramSlotByDate(sqlDateOfProgram);
+
+            return ps;
+
+        }
+        return null;
     }
   
     
@@ -114,34 +113,40 @@ public class ScheduleRESTService {
     /**
      * PUT method for updating an instance of resource
      * @param ps
+     * @return 
      */
     @POST
     @Path("/update")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void modifySchedule(ProgramSlot ps) {
-        service.processModify(ps);
+    @Produces(MediaType.APPLICATION_JSON)
+    public String modifySchedule(ProgramSlot ps) {
+        return service.processModify(ps);
     }
     
     /**
      * POST method for creating an instance of resource
      * @param ps
+     * @return 
      */
     @PUT
     @Path("/create")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void createSchedule(ProgramSlot ps) {
-        service.processCreate(ps);
+    @Produces(MediaType.APPLICATION_JSON)
+    public String createSchedule(ProgramSlot ps) {
+        return service.processCreate(ps);
     }
    
     /**
      * DELETE method for deleting an instance of resource
      * @param id
+     * @return 
      */
     @DELETE
     @Path("/delete/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void deleteSchedule(@PathParam("id") int id) {
-          service.processDelete(id);
+    @Produces(MediaType.APPLICATION_JSON)
+    public String deleteSchedule(@PathParam("id") int id) {
+         return service.processDelete(id);
     }
 
 }

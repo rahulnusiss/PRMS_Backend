@@ -40,7 +40,7 @@ public class Role implements Cloneable, Serializable {
 	 * Get- and Set-methods for persistent variables. The default behaviour does
 	 * not make any checks against malformed data, so these might require some
 	 * manual additions.
-     * @return 
+                      * @return the role associated with user
 	 */
 	public String getRole() {
 		return this.role;

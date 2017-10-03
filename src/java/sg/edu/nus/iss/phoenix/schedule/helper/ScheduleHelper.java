@@ -16,7 +16,13 @@ import sg.edu.nus.iss.phoenix.schedule.entity.ProgramSlot;
  */
 public class ScheduleHelper {
     
-    
+    /**
+     * Check conflict based on start time and duration compute endTime and check whether entered dateofProgram and startTime result in conflict
+     * @param psList
+     * @param ps
+     * @return
+     * @throws NotFoundException
+     */
     public boolean checkConflict(List<ProgramSlot> psList, ProgramSlot ps) throws NotFoundException{
     
         if(ps != null && !psList.isEmpty()){
@@ -42,7 +48,12 @@ public class ScheduleHelper {
     return false;
     }//checkConflict
     
-    
+    /**
+     *Return HashMap which contains startTime and computed endTime
+     * @param psList
+     * @return
+     * @throws NotFoundException
+     */
     public HashMap<Long,Long> getStartEndTimeMap(List<ProgramSlot> psList) throws NotFoundException{
     
         HashMap<Long,Long> timeMap = new HashMap<>();

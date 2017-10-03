@@ -16,10 +16,18 @@ public class ProgramSlots {
     
     List<ProgramSlot> psList;
 
+    /**
+     *
+     * @param psList
+     */
     public void setPsList(List<ProgramSlot> psList) {
         this.psList = psList;
     }
 
+    /**
+     *
+     * @return Program Slot List
+     */
     public List<ProgramSlot> getPsList() {
         return psList;
     }

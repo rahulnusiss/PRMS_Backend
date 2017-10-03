@@ -75,7 +75,7 @@ public class ProgramRESTService {
     
     /**
      * PUT method for updating or creating an instance of resource
-     * @param content representation for the resource
+     * @param rp
      */
     @POST
     @Path("/update")
@@ -86,7 +86,7 @@ public class ProgramRESTService {
     
     /**
      * POST method for creating an instance of resource
-     * @param content representation for the resource
+     * @param rp
      */
     @PUT
     @Path("/create")
