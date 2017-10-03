@@ -5,7 +5,6 @@
  */
 package sg.edu.nus.iss.phoenix.maintainuser.restful;
 
-import sg.edu.nus.iss.phoenix.radioprogram.restful.*;
 import java.util.List;
 import sg.edu.nus.iss.phoenix.authenticate.entity.*;
 
@@ -17,10 +16,18 @@ public class Users {
     
     private List <User> usrList;
 
+    /**
+     *Retrieve User List
+     * @return
+     */
     public List<User> getUsrList() {
         return usrList;
     }
  
+    /**
+     *
+     * @param usrList set UserList
+     */
     public void setUsrList(List<User> usrList) {
         this.usrList = usrList;
     }

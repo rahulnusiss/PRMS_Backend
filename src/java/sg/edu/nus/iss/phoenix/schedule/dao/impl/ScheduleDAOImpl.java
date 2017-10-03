@@ -75,7 +75,7 @@ public class ScheduleDAOImpl implements ScheduleDAO {
     @Override
     public List<ProgramSlot> loadAll() throws SQLException {
         openConnection();
-        String sql = "SELECT *  FROM `program-slot` ORDER by `program-name` ASC; ";
+        String sql = "SELECT *  FROM `program-slot` ORDER by `dateOfProgram` ASC; ";
         List<ProgramSlot> searchResults = listQuery(connection.prepareStatement(sql));
         closeConnection();
         System.out.println("record size " + searchResults.size());
@@ -110,8 +110,6 @@ public class ScheduleDAOImpl implements ScheduleDAO {
             }else{
                    status=true;
             }
-            
-
         }catch(ProgramSlotOverlapException ex){
             logger.error(ex.getMessage());
             status=false;
@@ -417,5 +415,36 @@ public class ScheduleDAOImpl implements ScheduleDAO {
 
         return result;
     }
+    
+    public boolean checkUserExistInSchedule(String userId) throws SQLException,NotFoundException{
+    
+        String sql = "SELECT * FROM `program-slot` where (`presenter-id` = ? OR `producer-id`=?);";
+        PreparedStatement stmt = null;
+        openConnection();
+        stmt = connection.prepareStatement(sql);
+        stmt.setString(1, userId);
+        stmt.setString(2,userId);
+
+        List<ProgramSlot> psList = listQuery(stmt);
+
+        if (psList.size() >0 || !psList.isEmpty()) {
+
+            for(ProgramSlot ps : psList){
+            
+                        if(ps!=null){
+                                    return true;
+                        }
+            }
+            
+        }
+
+        return false;
+    
+    }
+    
+    
+    
+    
+    
 
 }

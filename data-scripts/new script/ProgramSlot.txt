@@ -1,0 +1,31 @@
+drop the existing program slot table and execute below scripts.
+
+
+
+
+
+CREATE TABLE `program-slot` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `duration` time NOT NULL,
+  `dateOfProgram` datetime NOT NULL,
+  `startTime` time NOT NULL,
+  `program-name` varchar(45) DEFAULT NULL,
+  `presenter-id` varchar(40) DEFAULT NULL,
+  `producer-id` varchar(40) DEFAULT NULL,
+  PRIMARY KEY (`id`,`dateOfProgram`,`startTime`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
+  KEY `name_program_slot` (`program-name`),
+  KEY `presenter_user` (`presenter-id`),
+  KEY `producer_user` (`producer-id`),
+  CONSTRAINT `name` FOREIGN KEY (`program-name`) REFERENCES `radio-program` (`name`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `presenter` FOREIGN KEY (`presenter-id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  CONSTRAINT `producer` FOREIGN KEY (`producer-id`) REFERENCES `user` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
+
+
+
+
+
+
+
+

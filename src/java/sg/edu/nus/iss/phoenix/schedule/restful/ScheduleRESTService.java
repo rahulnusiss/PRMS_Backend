@@ -5,11 +5,7 @@
  */
 package sg.edu.nus.iss.phoenix.schedule.restful;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 import javax.enterprise.context.RequestScoped;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.DELETE;
@@ -64,30 +60,35 @@ public class ScheduleRESTService {
     
      /**
      * Retrieves representation of an instance of resource
-     * @param dateofProgram
+     * @param ps
      * @return an instance of resource
      */
-    @GET
-    @Path("/retrievebyDate/{date}")
+    @POST
+    @Path("/retrievebycriteria")
     @Produces(MediaType.APPLICATION_JSON)
-    public ProgramSlot getProgramSlotByDate(@PathParam("date") String dateofProgram) {
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd");
-
-        java.util.Date date = null;
-        try {
-            date = dateFormatter.parse(dateofProgram);
-        } catch (ParseException ex) {
-            Logger.getLogger(ScheduleRESTService.class.getName()).log(Level.SEVERE, null, ex);
-        }
-        if (date != null) {
-            java.sql.Date sqlDateOfProgram = new java.sql.Date(date.getTime());
-
-            ProgramSlot ps = service.findProgramSlotByDate(sqlDateOfProgram);
-
-            return ps;
-
-        }
-        return null;
+    @Consumes(MediaType.APPLICATION_JSON)
+    public ProgramSlot getProgramSlotByCriteria(ProgramSlot ps) {
+         if(ps != null) {
+            
+            ArrayList<ProgramSlot> psList = service.findProgramSlotByCriteria(ps);
+                    
+             if(!psList.isEmpty()){
+             
+                   for(ProgramSlot programSlot : psList){
+                       
+                       if(programSlot!=null){
+                   
+                                if(programSlot.getDateofProgram().equals(ps.getDateofProgram()) &&  programSlot.getStartTime().equals(ps.getStartTime())){
+                                
+                                                return programSlot;
+                                }//if
+                                
+                       }//(programSlot!=null)          
+                   } //for
+             }//if
+            
+        }//
+        return ps;
     }
   
     

@@ -73,7 +73,7 @@ public class UserRESTService {
     
     /**
      *
-     * @return
+     * @return all Users
      */
     @GET
     @Path("/all")
@@ -94,6 +94,10 @@ public class UserRESTService {
         return usrsList;
     }
     
+    /**
+     *
+     * @return all Presenter list
+     */
     @GET
     @Path("/allPresenters")
     @Produces(MediaType.APPLICATION_JSON)
@@ -119,6 +123,10 @@ public class UserRESTService {
         return usrsList;
     }
     
+    /**
+     *
+     * @return all producers
+     */
     @GET
     @Path("/allProducers")
     @Produces(MediaType.APPLICATION_JSON)
@@ -169,18 +177,20 @@ public class UserRESTService {
     /**
      * DELETE method for deleting an instance of resource
      * @param id name of the resource
+     * @return status 
      */
     @DELETE
     @Path("/delete/{id}")
     @Consumes(MediaType.APPLICATION_JSON)
-    public void deleteUser(@PathParam("id") String id) {
+    @Produces(MediaType.APPLICATION_JSON)
+    public String deleteUser(@PathParam("id") String id) {
         String name2;
         try { 
             name2 = URLDecoder.decode(id, "UTF-8");
         } catch (UnsupportedEncodingException e) {
-            return;
+            return "";
         }
 
-        service.processDelete(name2);
+       return  service.processDelete(name2);
     }
 }
