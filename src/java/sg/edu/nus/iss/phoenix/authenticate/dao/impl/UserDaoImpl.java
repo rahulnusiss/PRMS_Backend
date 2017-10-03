@@ -125,11 +125,9 @@ public class UserDaoImpl implements UserDao {
             stmt.setString(3, valueObject.getName());
             String roleString = getRoleString(valueObject);
             stmt.setString(4, roleString);
-            stmt.setString(4, valueObject.getRoles().get(0).getRole());
-
+   
             int rowcount = databaseUpdate(stmt);
             if (rowcount != 1) {
-                // System.out.println("PrimaryKey Error when updating DB!");
                 throw new SQLException("PrimaryKey Error when updating DB!");
             }
 
@@ -150,7 +148,7 @@ public class UserDaoImpl implements UserDao {
         String roleString = String.join(DELIMITER, roleStrings);
         return roleString;
     }
-
+  
     /*
      * (non-Javadoc)
      * 
@@ -170,8 +168,7 @@ public class UserDaoImpl implements UserDao {
             stmt.setString(2, valueObject.getName());
             String roleString = getRoleString(valueObject);
             stmt.setString(3, roleString);
-            stmt.setString(3, valueObject.getRoles().get(0).getRole());
-
+  
             stmt.setString(4, valueObject.getId());
 
             int rowcount = databaseUpdate(stmt);
@@ -400,10 +397,6 @@ public class UserDaoImpl implements UserDao {
                 valueObject.setPassword(result.getString("password"));
                 valueObject.setName(result.getString("name"));
                 valueObject.setRoles(createRoles(result.getString("role")));
-                //Role e = new Role(result.getString("role"));
-                //ArrayList<Role> roles = new ArrayList<Role>();
-                //roles.add(e);
-                //valueObject.setRoles(roles);
 
             } else {
                 // System.out.println("User Object Not Found!");
@@ -438,10 +431,6 @@ public class UserDaoImpl implements UserDao {
                 temp.setPassword(result.getString("password"));
                 temp.setName(result.getString("name"));
                 temp.setRoles(createRoles(result.getString("role")));
-                //Role e = new Role(result.getString("role"));
-                //ArrayList<Role> roles = new ArrayList<Role>();
-                //roles.add(e);
-                //temp.setRoles(roles);
 
                 searchResults.add(temp);
             }

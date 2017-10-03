@@ -416,6 +416,13 @@ public class ScheduleDAOImpl implements ScheduleDAO {
         return result;
     }
     
+    /**
+     * To check Selected User Has been Assigned in Program Slot Table
+     * @param userId
+     * @return true/false as Status
+     * @throws SQLException
+     * @throws NotFoundException
+     */
     public boolean checkUserExistInSchedule(String userId) throws SQLException,NotFoundException{
     
         String sql = "SELECT * FROM `program-slot` where (`presenter-id` = ? OR `producer-id`=?);";
